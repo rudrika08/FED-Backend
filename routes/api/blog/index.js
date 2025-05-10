@@ -2,6 +2,7 @@ const express = require('express');
 const { createBlog } = require('../../../controllers/blog');
 const router = express.Router();
 const {deleteBlog} = require('../../../controllers/blog/deleteBlog');
+const {updateBlog} = require('../../../controllers/blog/updateBlog');
 const {getBlog} = require('../../../controllers/blog/getBlogs');
 // Import the middlewares required
 const { checkAccess } = require('../../../middleware/access/checkAccess');
@@ -13,8 +14,8 @@ const { imageUpload } = require('../../../middleware/upload');
 // rudrika
 //  router.get('/getBlog', getBlog);
 router.get('/getBlog/:id', getBlog);
-// router.delete('/deleteBlog/:id', deleteBlog);
-// router.put('/updateBlog/:id', updateBlog); 
+router.delete('/deleteBlog/:id', deleteBlog);
+router.put('/updateBlog/:id', updateBlog); 
 
 // shreyash
  //router.get('/getBlogByAuthor/:author', getBlogByAuthor);
