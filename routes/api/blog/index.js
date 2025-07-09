@@ -3,7 +3,7 @@ const { createBlog } = require("../../../controllers/blog");
 const router = express.Router();
 const { deleteBlog } = require("../../../controllers/blog/deleteBlog");
 const { getBlog } = require("../../../controllers/blog/getBlogs");
-// Import the middlewares required
+// middlewares
 const { checkAccess } = require("../../../middleware/access/checkAccess");
 const { verifyToken } = require("../../../middleware/verifyToken");
 const { imageUpload } = require("../../../middleware/upload");
@@ -13,13 +13,12 @@ const {
   getBlogByDepartment,
 } = require("../../../controllers/blog/getBlog");
 const { updateBlog } = require("../../../controllers/blog/updateBlog");
-// Define the blog routes here
 
 // rudrika
 router.get("/getBlog", getBlog);
 router.get("/getBlog/:id", getBlog);
 router.delete("/deleteBlog/:id", deleteBlog);
-router.put("/updateBlog/:id", updateBlog);
+router.put("/updateBlog/:id", imageUpload.single("image"), updateBlog);
 
 // shreyash
 router.get("/getBlogByAuthor/:author", getBlogByAuthor);

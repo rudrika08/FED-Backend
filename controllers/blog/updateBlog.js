@@ -31,11 +31,13 @@ const updateBlog = async (req, res, next) => {
 
         let imageUrl = existingBlog.image;
 
-        // Replace image if new one is uploaded
+        // repalce image is new one if provided
         if (req.file) {
             await deleteImage(existingBlog.image, "BLOG");
             const newImage = await uploadImage(req.file.path, "BLOG");
             imageUrl = newImage.secure_url;
+        } else if (req.body.image && typeof req.body.image === 'string' && req.body.image.startsWith('http')) {
+            imageUrl = req.body.image;
         }
 
         const updatedBlog = await prisma.blog.update({
