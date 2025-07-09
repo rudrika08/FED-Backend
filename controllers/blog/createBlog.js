@@ -39,6 +39,7 @@ const createBlog = async (req, res, next) => {
         visibility,
         approval,
         summary,
+        content: req.body.content || "", 
       },
     });
     res.status(status.OK).json({ message: "Blog created successfully", blog });
