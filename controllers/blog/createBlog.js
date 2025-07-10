@@ -6,12 +6,7 @@ const status = require("http-status");
 
 const createBlog = async (req, res, next) => {
   try {
-    // Check if the request contains a file
-    if (!req.file) {
-      return next(new ApiError(status.BAD_REQUEST, "Image file is required"));
-    }
-
-    // Check if the request contains all required fields
+    // validate fields
     const {
       title,
       author,
@@ -21,16 +16,32 @@ const createBlog = async (req, res, next) => {
       visibility,
       approval,
       summary,
+      image
     } = req.body;
 
-    const image = await uploadImage(req.file.path, "BLOG");
-
     if (!title || !author || !blogLink || !desc || !date) {
-      return next(new ApiError(status.BAD_REQUEST, "All fields are required"));
+      return next(new ApiError(status.BAD_REQUEST, "All required fields must be provided"));
     }
+
+    // handle image
+    let imageUrl = null;
+    const isValidImageUrl = (url) => {
+      return typeof url === 'string' && /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url);
+    };
+
+    if (req.file) {
+      const uploaded = await uploadImage(req.file.path, "BLOG");
+      imageUrl = uploaded.secure_url;
+    } else if (isValidImageUrl(image)) {
+      imageUrl = image;
+    } else {
+      return next(new ApiError(status.BAD_REQUEST, "A valid blog image is required (upload or URL)"));
+    }
+
+    // create blog
     const blog = await prisma.blog.create({
       data: {
-        image: image.secure_url,
+        image: imageUrl,
         title,
         author,
         blogLink,
@@ -39,18 +50,13 @@ const createBlog = async (req, res, next) => {
         visibility,
         approval,
         summary,
-        content: req.body.content || "", 
       },
     });
+
     res.status(status.OK).json({ message: "Blog created successfully", blog });
   } catch (error) {
     console.error("Error creating blog:", error);
-    next(
-      new ApiError(
-        status.INTERNAL_SERVER_ERROR,
-        "An error occurred while creating the blog"
-      )
-    );
+    next(new ApiError(status.INTERNAL_SERVER_ERROR, "An error occurred while creating the blog"));
   }
 };
 
