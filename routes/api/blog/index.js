@@ -27,6 +27,6 @@ router.get("/getBlogByVisibility/:visibility", getBlogByVisibility);
 router.get("/getBlogByDepartment/:department", getBlogByDepartment);
 // router.get('/getBlogByApproval/:approval', getBlogByApproval);
 
-// router.use(verifyToken, checkAccess('ADMIN'));
+router.use(verifyToken, checkAccess('ADMIN', 'SENIOR_EXECUTIVE_CREATIVE'));
 router.post("/createBlog", imageUpload.single("image"), createBlog);
 module.exports = router;
