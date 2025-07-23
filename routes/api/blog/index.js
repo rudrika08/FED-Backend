@@ -8,26 +8,14 @@ const { getBlog } = require("../../../controllers/blog/getBlogs");
 const { checkAccess } = require("../../../middleware/access/checkAccess");
 const { verifyToken } = require("../../../middleware/verifyToken");
 const { imageUpload } = require("../../../middleware/upload");
-// const {
-//   getBlogByAuthor,
-//   getBlogByVisibility,
-//   getBlogByDepartment,
-// } = require("../../../controllers/blog/getBlog");
 const { updateBlog } = require("../../../controllers/blog/updateBlog");
 
 
 
-// rudrika
 router.get("/getBlog", getBlog);
 router.delete("/deleteBlog/:id", deleteBlog);
 router.put("/updateBlog/:id", imageUpload.single("image"), updateBlog);
 
-// shreyash
-// router.get("/getBlogByAuthor/:author", getBlogByAuthor);
-// router.get("/getBlogByVisibility/:visibility", getBlogByVisibility);
-// router.get('/getBlogByCategory/:category', getBlogByCategory);
-// router.get("/getBlogByDepartment/:department", getBlogByDepartment);
-// router.get('/getBlogByApproval/:approval', getBlogByApproval);
 
 router.use(verifyToken, checkAccess('ADMIN', 'SENIOR_EXECUTIVE_CREATIVE'));
 router.post("/createBlog", imageUpload.single("image"), createBlog);

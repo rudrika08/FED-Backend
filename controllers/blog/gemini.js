@@ -6,7 +6,7 @@ puppeteer.use(StealthPlugin());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// 🔹 Controller for 2-line summary
+// Controller for 2-line summary
 const getSummary = async (req, res) => {
   const { mediumLink } = req.body;
   
@@ -29,7 +29,7 @@ const getSummary = async (req, res) => {
   }
 };
 
-// 🔹 Controller for autofill
+// Controller for autofill
 const getAutofill = async (req, res) => {
   const { mediumLink } = req.body;
   
@@ -58,7 +58,7 @@ const getAutofill = async (req, res) => {
     const blogText = await page.$eval('article', el => el.innerText).catch(() => '');
     console.log("📄 Scraped blog content length:", blogText.length);
 
-    // 🖼️ Extract banner image
+    // Extract banner image
     await page.waitForSelector("img", { timeout: 15000 });
     const imageSrcs = await page.$$eval("img", imgs =>
       imgs.map(img => img.src).filter(src =>
@@ -81,7 +81,7 @@ const getAutofill = async (req, res) => {
       console.warn("⚠️ No suitable banner image found.");
     }
 
-    // 📅 Extract publication date
+    // Extract publication date
     let publishedDate = null;
     try {
       const dateText = await page.$eval('[data-testid="storyPublishDate"]', el => el.textContent.trim());
@@ -112,7 +112,7 @@ const getAutofill = async (req, res) => {
       return res.status(500).json({ error: "Blog content is too short or not extractable." });
     }
 
-    // 🔮 Prompt Gemini
+    // Prompt Gemini
     const prompt = `
 Extract the following details from this blog content:
 1. Blog title
@@ -151,7 +151,7 @@ ${blogText}
       });
     }
 
-    // ✅ Send everything
+    // Send everything
     console.log("📤 Final formatted publishedDate being sent:", publishedDate);
     res.json({
       title: parsed.title || "",
