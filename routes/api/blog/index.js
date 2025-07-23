@@ -16,7 +16,6 @@ const { updateBlog } = require("../../../controllers/blog/updateBlog");
 
 // rudrika
 router.get("/getBlog", getBlog);
-router.get("/getBlog/:id", getBlog);
 router.delete("/deleteBlog/:id", deleteBlog);
 router.put("/updateBlog/:id", imageUpload.single("image"), updateBlog);
 
