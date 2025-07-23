@@ -19,4 +19,6 @@ router.use('/certificate', require('./certificate/certificateRoute'));
 
 router.use('/blog', require('./blog'));
 
+router.use('/gemini', require('./blog/ai/gemini'));
+
 module.exports = router; // Ensure you are exporting the router

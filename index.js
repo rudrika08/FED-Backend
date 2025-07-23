@@ -118,8 +118,7 @@ app.use(cors({
 }));
 app.options('*', cors()); // handle preflight requests
 
-const geminiRoute = require('./routes/ai/gemini');
-app.use('/api/gemini', geminiRoute);
+
 
 
 

@@ -1,17 +1,18 @@
-const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
 puppeteer.use(StealthPlugin());
 
-const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// 🔹 Route for 2-line summary
-router.post('/summary', async (req, res) => {
+// 🔹 Controller for 2-line summary
+const getSummary = async (req, res) => {
   const { mediumLink } = req.body;
-  if (!mediumLink) return res.status(400).json({ error: "Medium link is required." });
+  
+  if (!mediumLink) {
+    return res.status(400).json({ error: "Medium link is required." });
+  }
 
   const prompt = `Summarize this Medium blog post in 2 lines: ${mediumLink}`;
   console.log("🔹 Prompt sent to Gemini (/summary):", prompt);
@@ -26,12 +27,15 @@ router.post('/summary', async (req, res) => {
     console.error("❌ Error in /summary:", err);
     res.status(500).json({ error: "Something went wrong with Gemini Summary API." });
   }
-});
+};
 
-// 🔹 Route for autofill
-router.post('/autofill', async (req, res) => {
+// 🔹 Controller for autofill
+const getAutofill = async (req, res) => {
   const { mediumLink } = req.body;
-  if (!mediumLink) return res.status(400).json({ error: "Medium link is required." });
+  
+  if (!mediumLink) {
+    return res.status(400).json({ error: "Medium link is required." });
+  }
 
   let browser;
   try {
@@ -79,29 +83,28 @@ router.post('/autofill', async (req, res) => {
 
     // 📅 Extract publication date
     let publishedDate = null;
-      try {
-        const dateText = await page.$eval('[data-testid="storyPublishDate"]', el => el.textContent.trim());
-        console.log("📆 Found publish date text:", dateText);
+    try {
+      const dateText = await page.$eval('[data-testid="storyPublishDate"]', el => el.textContent.trim());
+      console.log("📆 Found publish date text:", dateText);
 
-        if (dateText.includes("ago")) {
-          const match = dateText.match(/(\d+)\s+days?\s+ago/);
-          if (match) {
-            const daysAgo = parseInt(match[1]);
-            const date = new Date();
-            date.setDate(date.getDate() - daysAgo);
-            publishedDate = date.toISOString().split("T")[0];
-          }
-        } else {
-          const parsedDate = new Date(dateText);
-         if (!isNaN(parsedDate)) {
+      if (dateText.includes("ago")) {
+        const match = dateText.match(/(\d+)\s+days?\s+ago/);
+        if (match) {
+          const daysAgo = parseInt(match[1]);
+          const date = new Date();
+          date.setDate(date.getDate() - daysAgo);
+          publishedDate = date.toISOString().split("T")[0];
+        }
+      } else {
+        const parsedDate = new Date(dateText);
+        if (!isNaN(parsedDate)) {
           const pad = n => n.toString().padStart(2, "0");
           publishedDate = `${parsedDate.getFullYear()}-${pad(parsedDate.getMonth() + 1)}-${pad(parsedDate.getDate())}`;
         }
-
-        }
-      } catch (err) {
-        console.warn("⚠️ Could not extract publication date.");
       }
+    } catch (err) {
+      console.warn("⚠️ Could not extract publication date.");
+    }
 
     await browser.close();
 
@@ -163,6 +166,9 @@ ${blogText}
     if (browser) await browser.close();
     res.status(500).json({ error: "Something went wrong with Gemini Autofill." });
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  getSummary,
+  getAutofill
+};
