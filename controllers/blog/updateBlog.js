@@ -21,6 +21,11 @@ const updateBlog = async (req, res, next) => {
             category,
         } = req.body;
 
+        // Check if any of the fields are null
+        if (!title || !author || !blogLink || !desc || !date || !visibility || !approval || !summary || !category) {
+            return next(new ApiError(status.BAD_REQUEST, "All fields are required"));
+        }
+
         const existingBlog = await prisma.blog.findUnique({
             where: { id },
         });
