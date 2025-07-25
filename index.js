@@ -105,16 +105,29 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+
 // Middlewares
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
+app.use(cors({
+  origin: "http://localhost:5173", // your frontend dev URL
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+}));
+app.options('*', cors()); // handle preflight requests
+
+
+
+
+
+
 // app.use(cors({
 //   origin: /^https:\/\/.*\.fedkiit\.com$/
 // }));
 // app.options('*', cors()); 
-app.use(cors("*"))
+// app.use(cors("*"))
 // app.use(cors({
 //     origin: '*',
 //     credentials: true,
