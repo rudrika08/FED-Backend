@@ -105,7 +105,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-const frontendUrl = process.env.FRONTEND_URL;
+const frontendUrl = process.env.DOMAIN;
 // Middlewares
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
