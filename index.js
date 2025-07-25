@@ -105,14 +105,14 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-
+const frontendUrl = process.env.FRONTEND_URL;
 // Middlewares
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:5173", // your frontend dev URL
+  origin: frontendUrl,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 }));
