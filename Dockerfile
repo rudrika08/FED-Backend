@@ -2,6 +2,7 @@ FROM node:20-slim
 
 # Install Chromium dependencies
 RUN apt-get update && apt-get install -y \
+    libcups2 \
     libcairo2-dev \
     libpango1.0-dev \
     libjpeg-dev \
@@ -28,6 +29,7 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     libdrm2 \
     libgl1 \
+    libxkbcommon0 \
     xdg-utils \
     wget \
     --no-install-recommends && \
